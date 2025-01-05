@@ -44,7 +44,7 @@
 4. 运行脚本：
 
     ```bash
-    python crawler.py
+    python crab.py
     ```
 
 ## 当前版本
@@ -107,7 +107,7 @@ This crawler script requires the following environment and libraries:
 4. Run the script:
 
     ```bash
-    python crawler.py
+    python crab.py
     ```
 
 ## Current Version
