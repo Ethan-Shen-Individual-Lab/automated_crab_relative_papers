@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>论文爬虫控制面板</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            text-align: left;
+            margin-top: 30px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>论文爬虫控制面板</h1>
+        <form id="crawlerForm" onsubmit="startCrawler(event)">
+            <div class="form-group">
+                <label for="articleName">论文名称：</label>
+                <input type="text" id="articleName" required placeholder="请输入需要搜索的文章名称">
+            </div>
+            
+            <div class="form-group">
+                <label for="workDir">保存路径：</label>
+                <input type="text" id="workDir" required placeholder="例如：D:/papers">
+            </div>
+            
+            <button type="submit" id="submitBtn">开始爬取</button>
+        </form>
+        
+        <div id="result"></div>
+    </div>
+
+    <script>
+        async function startCrawler(event) {
+            event.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const result = document.getElementById('result');
+            
+            submitBtn.disabled = true;
+            result.textContent = '正在启动爬虫程序...';
+            
+            const formData = {
+                article_name: document.getElementById('articleName').value,
+                work_dir: document.getElementById('workDir').value
+            };
+            
+            try {
+                const response = await fetch('/api/start_crawler', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    result.textContent = `爬虫程序已启动，请查看控制台输出`;
+                } else {
+                    result.textContent = `错误：${data.message}`;
+                }
+            } catch (error) {
+                result.textContent = `发生错误：${error}`;
+            } finally {
+                submitBtn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html> 
